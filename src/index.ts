@@ -1,14 +1,16 @@
 import express from "express";
 import { setupApp } from "./setupApp";
 
-// создание приложения
 const app = express();
 setupApp(app);
 
-// порт приложения
-const PORT = process.env.PORT || 5001;
+// экспортируем для Vercel
+export default app;
 
-// запуск приложения
-app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}`);
-});
+// если нужно локально тестировать:
+if (process.env.NODE_ENV !== "production") {
+    const PORT = process.env.PORT || 5001;
+    app.listen(PORT, () => {
+        console.log(`Example app listening on port ${PORT}`);
+    });
+}
