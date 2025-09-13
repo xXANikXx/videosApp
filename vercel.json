@@ -3,14 +3,17 @@
     "name": "videos-api",
     "builds": [
         {
-            "src": "dist/index.js",
-            "use": "@vercel/node"
+            "src": "index.ts",
+            "use": "@vercel/node",
+            "config": {
+                "tsconfig": "tsconfig.json"
+            }
         }
     ],
-    "rewrites": [
+    "routes": [
         {
-            "source": "/(.*)",
-            "destination": "/dist/index.js"
+            "src": "/(.*)",
+            "dest": "/index.ts"
         }
     ]
 }
