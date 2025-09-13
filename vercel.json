@@ -1,16 +1,11 @@
 {
     "version": 2,
-    "name": "videos-api",
-    "builds": [
+    "buildCommand": "pnpm build",
+    "outputDirectory": "dist",
+    "rewrites": [
         {
-            "src": "dist/index.js",
-            "use": "@vercel/node"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/dist/index.js"
+            "source": "/(.*)",
+            "destination": "/"
         }
     ]
 }
