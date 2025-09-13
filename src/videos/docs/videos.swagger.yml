@@ -1,0 +1,258 @@
+openapi: 3.0.0
+info:
+  title: Videos API
+  version: 1.0.0
+  description: API for managing videos
+
+tags:
+  - name: Videos
+    description: API for managing Videos
+
+paths:
+  /hometask_01/api/videos:
+    get:
+      summary: Returns all videos
+      tags: [Videos]
+      responses:
+        200:
+          description: List of all videos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Video'
+    post:
+      summary: Create a new video
+      tags: [Videos]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVideoInputDto'
+      responses:
+        201:
+          description: Video successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /hometask_01/api/videos/{id}:
+    get:
+      summary: Get a video by ID
+      tags: [Videos]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The unique identifier of the video
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Video found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+        404:
+          description: Video not found
+
+    put:
+      summary: Update a video by ID
+      tags: [Videos]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The unique identifier of the video
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVideoInputDto'
+      responses:
+        204:
+          description: Video updated successfully
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        404:
+          description: Video not found
+
+    delete:
+      summary: Delete a video by ID
+      tags: [Videos]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The unique identifier of the video
+          schema:
+            type: integer
+            example: 1
+      responses:
+        204:
+          description: Video deleted successfully
+        404:
+          description: Video not found
+
+components:
+  schemas:
+    Video:
+      type: object
+      required:
+        - id
+        - title
+        - author
+        - canBeDownloaded
+        - minAgeRestriction
+        - createdAt
+        - publicationDate
+        - availableResolutions
+      properties:
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+          maxLength: 40
+        author:
+          type: string
+          maxLength: 20
+        canBeDownloaded:
+          type: boolean
+          default: false
+        minAgeRestriction:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 18
+          nullable: true
+          default: null
+        createdAt:
+          type: string
+          format: date-time
+        publicationDate:
+          type: string
+          format: date-time
+          description: By default - +1 day from CreatedAt
+        availableResolutions:
+          type: array
+          items:
+            type: string
+            enum:
+              - P144
+              - P240
+              - P360
+              - P480
+              - P720
+              - P1080
+              - P1440
+              - P2160
+
+    CreateVideoInputDto:
+      type: object
+      required:
+        - title
+        - author
+        - availableResolutions
+      properties:
+        title:
+          type: string
+          maxLength: 40
+          example: "My Video"
+        author:
+          type: string
+          maxLength: 20
+          example: "John Doe"
+        availableResolutions:
+          type: array
+          items:
+            type: string
+            enum:
+              - P144
+              - P240
+              - P360
+              - P480
+              - P720
+              - P1080
+              - P1440
+              - P2160
+
+    UpdateVideoInputDto:
+      type: object
+      required:
+        - title
+        - author
+        - availableResolutions
+        - canBeDownloaded
+        - minAgeRestriction
+        - publicationDate
+      properties:
+        title:
+          type: string
+          maxLength: 40
+        author:
+          type: string
+          maxLength: 20
+        canBeDownloaded:
+          type: boolean
+          default: false
+        minAgeRestriction:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 18
+          nullable: true
+          default: null
+        publicationDate:
+          type: string
+          format: date-time
+        availableResolutions:
+          type: array
+          items:
+            type: string
+            enum:
+              - P144
+              - P240
+              - P360
+              - P480
+              - P720
+              - P1080
+              - P1440
+              - P2160
+
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type: string
+          example: "title"
+        message:
+          type: string
+          example: "Invalid title"
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        errorMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
